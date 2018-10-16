@@ -91,7 +91,6 @@ PEP8 has deprecated; instead use pycodestyle for the same effect
 ```
 $ cd src
 $ pycodestyle .
-
 ```
 
 ## Database Seeding
@@ -103,7 +102,7 @@ $ python manage.py db seed
 ```
 
 ## Running the sandbox
-
+ - insert here
 
 ## Deployment 🚀
 
