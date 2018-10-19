@@ -1,0 +1,33 @@
+version: '3.6'
+
+services:
+
+  core-api:
+    build:
+      context: ./services/core
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/core:/usr/src/app'
+    ports:
+      - 5000:5000
+    environment:
+        - FLASK_ENV=development
+        - FLASK_APP=manage.py
+        - APP_SETTINGS=src.config.DevelopmentConfig
+        - SECRET_KEY="supersecurerandom&&^&@#R&key"
+        - DATABASE_URL=postgres://dev:dev_password@core-api-database:5432/develop_core_db
+        - DATABASE_TEST_URL=postgres://dev:dev_password@core-api-database:5432/test_core_db
+    depends_on:
+      - core-api-database
+
+  core-api-database:
+    build:
+      context: ./services/core/src/db
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5432
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev_password
+
+
