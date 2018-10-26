@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 database = SQLAlchemy()
 
 
-def generate_uid(prefix="U-"):
+def generate_uid(prefix="U"):
     return prefix + '-' + str(uuid.uuid1())
 
 
@@ -45,6 +45,15 @@ class Base(database.Model):
             print(e)
         return deleted
 
+    def serialize(self, exclude={}):
+        """Map object to dict representation."""
+        instance_attribute_value_pair = {
+            column.name: str(getattr(self, column.name))
+            for column in self.__table__.columns if column.name not in exclude
+        }
+
+        return instance_attribute_value_pair
+
 
 class Location(Base):
 
@@ -72,3 +81,8 @@ class User(Base):
     email = database.Column(database.String, nullable=False, unique=True)
     phone = database.Column(database.String, nullable=False, unique=True)
     photo = database.Column(database.String)
+    user_name = database.Column(
+        database.String(128),
+        nullable=False,
+        unique=True
+    )
