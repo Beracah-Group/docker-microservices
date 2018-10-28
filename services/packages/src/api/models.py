@@ -17,6 +17,10 @@ class Servicepackages(db.Model):
         self.price = price
         self.description = description
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     def to_json(self):
         return {
             'id': self.id,
