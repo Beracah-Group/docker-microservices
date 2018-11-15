@@ -3,21 +3,21 @@ from sqlalchemy.sql import func
 
 database = SQLAlchemy()
 
-class Servicetypes(db.Model):
+class Servicetypes(database.Model):
     
     __tablename__ = "servicetypes"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    mode = db.Column(db.String(30), nullable=False)
-    description = db.Column(db.String(120), nullable=False)
+    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
+    mode = database.Column(database.String(30), nullable=False)
+    description = database.Column(database.String(120), nullable=False)
 
     def __init__(self, mode):
         self.mode = mode
         self.description = description
 
     def save(self):
-        db.session.add(self)
-        db.session.commit()
+        database.session.add(self)
+        database.session.commit()
 
     def to_json(self):
         return {
