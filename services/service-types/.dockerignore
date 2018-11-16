@@ -1,3 +1,0 @@
-.dockerignore
-Dockerfile-dev
-**/__pycache__/
