@@ -13,6 +13,13 @@ class Washing(databases.Model):
     date_created = databases.Column(databases.DateTime, default=datetime.utcnow())
     date_modified = databases.Column(databases.DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow())
 
+    type = databases.Column(databases.String(50))
+
+    __mapper_args__ = {
+        'polymorphic_on': type,
+        'polymorphic_identity': 'Washing'
+    }
+
     def save(self):
         databases.session.add(self)
         databases.session.commit()
@@ -24,3 +31,13 @@ class Washing(databases.Model):
                 'price': self.price,
                 'description': self.description
             }
+
+class Standard(Washing):
+    __mapper_args__ = {
+        'polymorphic_identity': 'standard'
+    }
+
+class Enhanced(Washing):
+    __mapper_args__ = {
+        'polymorphic_identity': 'enhanced'
+    }
