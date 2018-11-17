@@ -13,17 +13,17 @@ manager.add_command('databases', MigrateCommand)
 
 @manager.command
 def init_db():
-    os.system('createdb washing_db')
-    os.system('createdb wtesting_db')
+    os.system('createdb pickanddrop_db')
+    os.system('createdb pdptesting_db')
     print('Databases created')
 
 
 @manager.command
 def drop_db():
     os.system(
-        'psql -c "DROP DATABASE IF EXISTS wtesting_db"')
+        'psql -c "DROP DATABASE IF EXISTS pdptesting_db"')
     os.system(
-        'psql -c "DROP DATABASE IF EXISTS washing_db"')
+        'psql -c "DROP DATABASE IF EXISTS pickanddrop_db"')
     print('Databases dropped')
 
 

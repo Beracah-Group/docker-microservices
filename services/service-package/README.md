@@ -31,7 +31,7 @@ Install all app requirements
 `$ pip install -r requirements.txt`
 Create the database and run migrations
 
-`$ createdb washing_db`
+`$ createdb denting_db`
 
 `$ createdb testing_db`
 

@@ -8,7 +8,7 @@ from flask import jsonify, request, abort
 # abort method either accepts an error code or it can accept a Response object
 
 from src.api.__init__ import app, databases
-from src.api.v1.models import Washing
+from src.api.v1.models import Servicepkg
 from flask import render_template
 
 databases.create_all()
@@ -58,7 +58,7 @@ def internal_server_error(e):
 # 500 error handler
 @app.errorhandler(500)
 def internal_server_error(e):
-    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the washing API'})
+    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the Service package API'})
     response.status_code = 500
     return response
 
@@ -70,9 +70,9 @@ def homepage():
     """
     return render_template('index.html')
 
-# add washing type method
-@app.route('/washing/api/v1/washingtypes', methods=['POST'])
-def add_washing_method():
+# add sp type method
+@app.route('/servicepkg/api/v1/servicepkg', methods=['POST'])
+def add_sp_method():
     request.get_json(force=True)
     try:
     #     verification = verify_token(request)
@@ -81,32 +81,32 @@ def add_washing_method():
     #     else:
     #         return verification
 
-        w_name = request.json.get('name')
-        w_price = request.json.get('price')
-        w_description = request.json.get('description')
-        if not w_name:
-            response = jsonify({'Error': 'washing package has no name'})
+        d_name = request.json.get('name')
+        d_price = request.json.get('price')
+        d_description = request.json.get('description')
+        if not d_name:
+            response = jsonify({'Error': 'service package has no name'})
             response.status_code = 400
             return response
-        elif not w_price:
-            response = jsonify({'Error': 'washing package has no price tag'})
+        if not d_price:
+            response = jsonify({'Error': 'service package has no price tag'})
             response.status_code = 400
             return response
-        elif not w_description:
-            response = jsonify({'Error': 'washing package has no description'})
+        if not d_description:
+            response = jsonify({'Error': 'service package has no description'})
             response.status_code = 400
             return response
 
-        res = Washing.query.all()
-        data_check = [data for data in res if data.name == w_name]
+        res = Servicepkg.query.all()
+        data_check = [data for data in res if data.name == d_name]
         if data_check:
-            response = jsonify({'Warning': 'this washing package already exists.'})
+            response = jsonify({'Warning': 'this service package already exists'})
             response.status_code = 409
             return response
         else:
-            w = Washing(name=w_name, price=w_price, description=w_description)
-            w.save()
-            response = jsonify({'status': 'Washing package added successfully'})
+            d = Servicepkg(name=d_name, price=d_price, description=d_description)
+            d.save()
+            response = jsonify({'status': 'service package added successfully'})
             response.status_code = 201
             return response
     except KeyError:
@@ -115,10 +115,10 @@ def add_washing_method():
         return response
 
 
-# get bucket method
-@app.route('/washing/api/v1/washingtypes', methods=['GET'])
-def retrieve_washing_method():
-    message = 'No washing packages have been added yet'
+# get sp package
+@app.route('/servicepkg/api/v1/servicepkg', methods=['GET'])
+def retrieve_sp_method():
+    message = 'No service packages have been added yet'
     # payload = verify_token(request)
     # if isinstance(payload, dict):
     #     user_id = payload['user_id']
@@ -128,20 +128,20 @@ def retrieve_washing_method():
     limit = int(request.args.get("limit", 3))
     if limit > 100:
         limit = 100
-    respons = Washing.query.all()
+    respons = Servicepkg.query.all()
     if not respons:
-        response = jsonify({'error': 'No washing package has been created yet'})
+        response = jsonify({'error': 'No service package has been created yet'})
         response.status_code = 200
         return response
     else:
         search = request.args.get("q", "")
         if search:
-            res = [wash for wash in respons if wash.name in search]
+            res = [sp for sp in respons if sp.name in search]
             if not res:
-                response = jsonify({'error': 'The washing package you searched does not exist'})
+                response = jsonify({'error': 'The service package you searched does not exist'})
                 return response
             else:
-                washing_data = []
+                sp_data = []
                 for data in res:
                     final = {
                         'id': data.id,
@@ -151,14 +151,14 @@ def retrieve_washing_method():
                         'date-created': data.date_created,
                         'date_modified': data.date_modified,
                     }
-                    washing_data.clear()
-                    washing_data.append(final)
-                response = jsonify(washing_data)
+                    sp_data.clear()
+                    sp_data.append(final)
+                response = jsonify(sp_data)
                 response.status_code = 200
                 return response
         else:
-            res = [wash for wash in respons]
-            washing_data = []
+            res = [sp for sp in respons]
+            sp_data = []
             if not res:
                 response = jsonify({'error': message})
                 response.status_code = 200
@@ -173,25 +173,25 @@ def retrieve_washing_method():
                         'date-created': data.date_created,
                         'date_modified': data.date_modified,
                     }
-                    washing_data.append(final)
-                response = jsonify(washing_data)
+                    sp_data.append(final)
+                response = jsonify(sp_data)
                 response.status_code = 200
                 return response
 
 
-# get, update and delete washing package
-@app.route('/washing/api/v1/washingtypes/<int:washing_id>', methods=['GET', 'PUT', 'DELETE'])
-def washing_by_id(washing_id):
+# get, update and delete sp package
+@app.route('/servicepkg/api/v1/servicepkg/<int:sp_id>', methods=['GET', 'PUT', 'DELETE'])
+def sp_by_id(sp_id):
     # payload = verify_token(request)
     # if isinstance(payload, dict):
     #     user_id = payload['user_id']
     # else:
     #     return payload
-    res = Washing.query.all()
-    washing_data = [washing for washing in res if washing.id == washing_id]
+    res = Servicepkg.query.all()
+    sp_data = [sp for sp in res if sp.id == sp_id]
     if request.method == 'GET':
         data = {}
-        for data in washing_data:
+        for data in sp_data:
             data = {
                 'id': data.id,
                 'name': data.name,
@@ -200,8 +200,8 @@ def washing_by_id(washing_id):
                 'date-created': data.date_created,
                 'date_modified': data.date_modified,
             }
-        if washing_id not in data.values():
-            response = jsonify({'warning': 'the washing package does not exist.'})
+        if sp_id not in data.values():
+            response = jsonify({'warning': 'the service package does not exist.'})
             response.status_code = 404
             return response
         else:
@@ -210,7 +210,7 @@ def washing_by_id(washing_id):
             return response
     elif request.method == 'DELETE':
         data = {}
-        for data in washing_data:
+        for data in sp_data:
             data = {
                 'id': data.id,
                 'name': data.name,
@@ -219,22 +219,22 @@ def washing_by_id(washing_id):
                 'date-created': data.date_created,
                 'date_modified': data.date_modified,
             }
-        if washing_id not in data.values():
-            response = jsonify({'warning': 'the washing package does not exist.'})
+        if sp_id not in data.values():
+            response = jsonify({'warning': 'the service package does not exist.'})
             response.status_code = 404
             return response
         else:
-            delete = Washing.query.filter_by(id=washing_id).first()
+            delete = Servicepkg.query.filter_by(id=sp_id).first()
             databases.session.delete(delete)
             databases.session.commit()
-            response = jsonify({'Status': 'Washing package deleted successfully.'})
+            response = jsonify({'Status': 'Service package deleted successfully.'})
             response.status_code = 200
             return response
     elif request.method == 'PUT':
         request.get_json(force=True)
-        data = Washing.query.filter_by(id=washing_id).first()
+        data = Servicepkg.query.filter_by(id=sp_id).first()
         if not data:
-            response = jsonify({'warning': 'the Washing package does not exist.'})
+            response = jsonify({'warning': 'the service package does not exist.'})
             response.status_code = 404
             return response
         else:
@@ -243,7 +243,7 @@ def washing_by_id(washing_id):
                 data.name = name
                 databases.session.commit()
                 data = {}
-                for data in washing_data:
+                for data in sp_data:
                     data = {
                         'id': data.id,
                         'name': data.name,

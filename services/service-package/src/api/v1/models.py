@@ -4,8 +4,8 @@ from datetime import datetime
 from src.api.__init__ import databases
 
 # washing class model with methods
-class Washing(databases.Model):
-    __tablename__ = 'Washing'
+class Servicepkg(databases.Model):
+    __tablename__ = 'Servicepkg'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
     name = databases.Column(databases.String(20))
     price = databases.Column(databases.Integer)
@@ -17,7 +17,9 @@ class Washing(databases.Model):
 
     __mapper_args__ = {
         'polymorphic_on': type,
+
         'polymorphic_identity': 'Washing'
+        'polymorphic_identity': 'Servicepkg'
     }
 
     def save(self):
@@ -32,12 +34,17 @@ class Washing(databases.Model):
                 'description': self.description
             }
 
-class Standard(Washing):
+class Basic(Servicepkg):
+    __mapper_args__ = {
+        'polymorphic_identity': 'basic'
+    }
+
+class Standard(Servicepkg):
     __mapper_args__ = {
         'polymorphic_identity': 'standard'
     }
 
-class Enhanced(Washing):
+class Enhanced(Servicepkg):
     __mapper_args__ = {
         'polymorphic_identity': 'enhanced'
     }

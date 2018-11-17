@@ -1,4 +1,4 @@
-from src.api.v1.washing import *
+from src.api.v1.servicepackage import *
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 

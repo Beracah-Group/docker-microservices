@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.2'
 
 services:
 
@@ -20,12 +20,68 @@ services:
     depends_on:
       - core-api-database
 
+  packages-api:
+    build:
+      context: ./services/packages
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/packages:/usr/src/app'
+    ports:
+      - 5001:5000
+    environment:
+        - FLASK_ENV=development
+        - FLASK_APP=manage.py
+        - APP_SETTINGS=src.config.DevelopmentConfig
+        - SECRET_KEY="supersecurerandom&&^&@#R&key"
+        - DATABASE_URL=postgres://dev:dev_password@packages-api-database:5432/develop_package_db
+        - DATABASE_TEST_URL=postgres://dev:dev_password@packages-api-database:5432/testing_package_db
+    depends_on:
+      - packages-api-database
+
+  service-types-api:
+    build:
+      context: ./services/service-types
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/service-types:/usr/src/app'
+    ports:
+      - 5002:5000
+    environment:
+        - FLASK_ENV=development
+        - FLASK_APP=manage.py
+        - APP_SETTINGS=src.config.DevelopmentConfig
+        - SECRET_KEY="supersecurerandom&&^&@#R&key"
+        - DATABASE_URL=postgres://dev:dev_password@service-types-database:5432/develop_stypes_db
+        - DATABASE_TEST_URL=postgres://dev:dev_password@service-types-database:5432/testing_stypes_db
+    depends_on:
+      - service-types-database
+
   core-api-database:
     build:
       context: ./services/core/src/db
       dockerfile: Dockerfile
     ports:
-      - 5001:5432
+      - 5003:5432
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev_password
+
+  packages-api-database:
+    build:
+      context: ./services/packages/src/db
+      dockerfile: Dockerfile
+    ports:
+      - 5004:5432
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev_password
+
+  service-types-database:
+    build:
+      context: ./services/service-types/src/db
+      dockerfile: Dockerfile
+    ports:
+      - 5005:5432
     environment:
       - POSTGRES_USER=dev
       - POSTGRES_PASSWORD=dev_password
