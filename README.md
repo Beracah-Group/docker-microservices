@@ -1,4 +1,4 @@
-# Auto Repair App. ✍
+# Auto Repair App ✍
 ### API for Core Services
 
 Provides the core api functionality for auto repair
