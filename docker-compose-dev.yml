@@ -40,6 +40,7 @@ services:
     depends_on:
       - packages-api-database
 
+# service-types api set up
   service-types-api:
     build:
       context: ./services/service-types
