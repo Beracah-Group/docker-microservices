@@ -2,6 +2,7 @@ version: '3.2'
 
 services:
 
+# core service set up
   core-api:
     build:
       context: ./services/core
