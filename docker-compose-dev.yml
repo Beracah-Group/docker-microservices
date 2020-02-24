@@ -59,6 +59,7 @@ services:
     depends_on:
       - service-types-database
 
+# core service DB set up
   core-api-database:
     build:
       context: ./services/core/src/db
