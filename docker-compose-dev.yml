@@ -81,6 +81,7 @@ services:
       - POSTGRES_USER=dev
       - POSTGRES_PASSWORD=dev_password
 
+# service types DB set up
   service-types-database:
     build:
       context: ./services/service-types/src/db
