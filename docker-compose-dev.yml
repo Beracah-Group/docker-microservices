@@ -21,6 +21,7 @@ services:
     depends_on:
       - core-api-database
 
+# packages-api set up
   packages-api:
     build:
       context: ./services/packages
