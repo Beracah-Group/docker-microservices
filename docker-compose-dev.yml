@@ -70,6 +70,7 @@ services:
       - POSTGRES_USER=dev
       - POSTGRES_PASSWORD=dev_password
 
+# packages DB set up
   packages-api-database:
     build:
       context: ./services/packages/src/db
